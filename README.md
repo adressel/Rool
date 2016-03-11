@@ -2,7 +2,8 @@
 
 This is an implementation of the PageRank algorithm, as described by Sergey Brin and Lawrence Page in [1].
 
-To build the project, run (in the same directory as pom.xml)::
+To build the project, run (in the same directory as pom.xml):
+
     mvn clean compile assemlby:single
 
 To run PageRank, two options have been implemented.
