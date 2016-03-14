@@ -1,4 +1,4 @@
-package andreasdressel.pagerank.parser;
+package andreasdressel.pagerank.io;
 
 import andreasdressel.pagerank.util.Node;
 import java.io.BufferedReader;

@@ -1,8 +1,8 @@
 package andreasdressel.pagerank.main;
 
 import andreasdressel.pagerank.PageRank;
-import andreasdressel.pagerank.parser.GraphParser;
-import andreasdressel.pagerank.parser.NodeDictionary;
+import andreasdressel.pagerank.io.GraphParser;
+import andreasdressel.pagerank.io.NodeDictionary;
 import andreasdressel.pagerank.util.Node;
 import java.util.List;
 
