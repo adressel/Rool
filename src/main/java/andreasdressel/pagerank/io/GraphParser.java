@@ -19,11 +19,11 @@ public class GraphParser {
   /**
    * FILE FORMAT:
     
-    *Vertices numberOfVertices
+    #nodes numberOfNodes
     1 nodeTitle
     2 nodeTitle
     ...
-    #arcs numberOfArcs
+    #edges numberOfEdges
     1 2
     2 3
     3 1
