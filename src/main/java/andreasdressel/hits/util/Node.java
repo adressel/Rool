@@ -5,8 +5,8 @@
  */
 package andreasdressel.hits.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -14,13 +14,13 @@ import java.util.List;
  */
 public class Node {
   
-  private final List<Node> outgoingLinks, incomingLinks;
+  private final Set<Node> outgoingLinks, incomingLinks;
   private double hubScore, authScore, hubScoreOld, authScoreOld;
   
   
   public Node() {
-    this.outgoingLinks = new ArrayList<Node>();
-    this.incomingLinks = new ArrayList<Node>();
+    this.outgoingLinks = new HashSet<Node>();
+    this.incomingLinks = new HashSet<Node>();
     
     this.hubScore = 1;
     this.authScore = 1;
@@ -60,5 +60,13 @@ public class Node {
     }
     this.authScore /= sumOfSquaredAuthScores;
     this.hubScore /= sumOfSquaredHubScores;
+  }
+  
+  public Set<Node> getOutgoingLinks() {
+    return this.outgoingLinks;
+  }
+  
+  public Set<Node> getIncomingLinks() {
+    return this.incomingLinks;
   }
 }

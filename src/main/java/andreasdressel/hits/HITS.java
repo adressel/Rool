@@ -9,7 +9,6 @@ import andreasdressel.hits.util.Node;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
 
 /**
  *
@@ -17,11 +16,11 @@ import java.util.SortedSet;
  */
 public class HITS {
   
-  private final HashMap<String, SortedSet<Integer>> invertedIndex;
+  private final HashMap<String, HashSet<Node>> invertedIndex;
   
   
   private HITS() {
-    this.invertedIndex = new HashMap<String, SortedSet<Integer>>();
+    this.invertedIndex = new HashMap<String, HashSet<Node>>();
     
     
   }
@@ -41,7 +40,7 @@ public class HITS {
     
     
     // 1. compute base set
-    Set<Node> seedSet = new HashSet<Node>();
+    HashSet<Node> seedSet = new HashSet<Node>();
     getBaseSet(query, seedSet);
     
     // 2. extend base set to seed set
@@ -73,18 +72,36 @@ public class HITS {
   }
   
   
-  private void getBaseSet(String query, Set<Node> set) {
+  private void getBaseSet(String query, HashSet<Node> set) {
     // base set has to contain all words from the query (AND)
+    // this is one possibile implementation choice (another one would be to allow phrases)
     
+    String[] queryElements = query.split(" ");
+    int i = 0;
+    while(set.isEmpty() && i < queryElements.length) {
+      if(this.invertedIndex.containsKey(queryElements[i])) {
+        set.addAll(this.invertedIndex.get(queryElements[i]));
+      }
+      i++;
+    }
     
+    while(i < queryElements.length) {
+      if(this.invertedIndex.containsKey(queryElements[i])) {
+        set.retainAll(this.invertedIndex.get(queryElements[i]));
+      }
+      i++;
+    }
   }
   
-  private void extendToSeedSet(Set<Node> set) {
-    
+  private void extendToSeedSet(HashSet<Node> set) {
+    for(Node node : set) {
+      set.addAll(node.getOutgoingLinks());
+      set.addAll(node.getIncomingLinks());
+    }
   }
   
   
-  private void updateOldScores(Set<Node> set) {
+  private void updateOldScores(HashSet<Node> set) {
     for(Node node : set) {
       node.updateOldAuthScore();
       node.updateOldHubScore();
