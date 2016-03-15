@@ -6,9 +6,9 @@
 package andreasdressel.hits;
 
 import andreasdressel.hits.util.Node;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 
 /**
@@ -28,7 +28,7 @@ public class HITS {
   
   // how to handle multiple word queries? simply AND, or phrase queries?
   
-  public synchronized List<Node> computeHITS(String query, int iterations) {
+  public synchronized Set<Node> computeHITS(String query, int iterations) {
     if(query == null) {
       System.err.println("Query must not be null. (computeHITS)");
       return null;
@@ -37,25 +37,31 @@ public class HITS {
     // this implementation is not case-sensitive
     query = query.toLowerCase();
     
-    // handle stop words
+    //@todo: handle stop words
     
     
     // 1. compute base set
-    List<Node> seedSet = new ArrayList<Node>();
+    Set<Node> seedSet = new HashSet<Node>();
     getBaseSet(query, seedSet);
     
     // 2. extend base set to seed set
     extendToSeedSet(seedSet);
     
     // 3. iteratively calculate hits values, and normalize after each step
+    double sumOfSquaredAuthScores = 0, sumOfSquaredHubScores = 0;
     while(iterations > 0) {
       
       for(Node node : seedSet) {
-        node.setNewAuthScore();
-        node.setNewHubScore();
+        sumOfSquaredAuthScores += Math.pow(node.calculateNewAuthScore(), 2);
+        sumOfSquaredHubScores += Math.pow(node.calculateNewHubScore(), 2);
       }
       
-      normalizeScores(seedSet);
+      sumOfSquaredAuthScores = Math.sqrt(sumOfSquaredAuthScores);
+      sumOfSquaredHubScores = Math.sqrt(sumOfSquaredHubScores);
+      
+      for(Node node : seedSet) {
+        node.normalizeScores(sumOfSquaredAuthScores, sumOfSquaredHubScores);
+      }
       
       iterations--;
       if(iterations > 0) {
@@ -67,25 +73,21 @@ public class HITS {
   }
   
   
-  private void getBaseSet(String query, List<Node> list) {
+  private void getBaseSet(String query, Set<Node> set) {
     // base set has to contain all words from the query (AND)
     
     
   }
   
-  private void extendToSeedSet(List<Node> list) {
+  private void extendToSeedSet(Set<Node> set) {
     
   }
   
-  private void normalizeScores(List<Node> list) {
-    
-  }
   
-  private void updateOldScores(List<Node> list) {
-    for(Node node : list) {
+  private void updateOldScores(Set<Node> set) {
+    for(Node node : set) {
       node.updateOldAuthScore();
       node.updateOldHubScore();
     }
   }
-  
 }

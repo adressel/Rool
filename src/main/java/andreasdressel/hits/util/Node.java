@@ -28,20 +28,37 @@ public class Node {
     this.authScoreOld = 1;
   }
   
-  public void setNewAuthScore() {
-    
-    
+  public double calculateNewAuthScore() {
+    this.authScore = 0;
+    for(Node node : this.incomingLinks) {
+      this.authScore += node.hubScoreOld;
+    }
+    return this.authScore;
   }
   
   public void updateOldAuthScore() {
     this.authScoreOld = this.authScore;
   }
   
-  public void setNewHubScore() {
-    
+  public double calculateNewHubScore() {
+    this.hubScore = 0;
+    for(Node node : this.outgoingLinks) {
+      this.hubScore += node.authScoreOld;
+    }
+    return this.hubScore;
   }
   
   public void updateOldHubScore() {
     this.hubScoreOld = this.hubScore;
+  }
+  
+  public void normalizeScores(double sumOfSquaredAuthScores, double sumOfSquaredHubScores) {
+    if(sumOfSquaredAuthScores == 0.0 || sumOfSquaredHubScores == 0.0) {
+      if(sumOfSquaredAuthScores == 0.0) System.err.println("Error: sumOfSquaredAuthScores == 0.0");
+      if(sumOfSquaredHubScores == 0.0) System.err.println("Error: sumOfSquaredHubScores == 0.0");
+      return;
+    }
+    this.authScore /= sumOfSquaredAuthScores;
+    this.hubScore /= sumOfSquaredHubScores;
   }
 }
