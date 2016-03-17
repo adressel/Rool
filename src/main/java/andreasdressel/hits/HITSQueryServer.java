@@ -6,28 +6,42 @@
 package andreasdressel.hits;
 
 import andreasdressel.hits.util.Node;
+import andreasdressel.server.Server;
+import andreasdressel.server.util.QueryHit;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  *
  * @author Andreas Dressel
  */
-public class HITS {
+public final class HITSQueryServer extends Server {
   
   private final HashMap<String, HashSet<Node>> invertedIndex;
   
   
-  private HITS() {
-    this.invertedIndex = new HashMap<String, HashSet<Node>>();
+  private HITSQueryServer(int port, String filename) {
+    super(port, filename);
     
+    this.invertedIndex = new HashMap<String, HashSet<Node>>();
+    initServer();
     
   }
   
-  // how to handle multiple word queries? simply AND, or phrase queries?
+  @Override
+  public void initServer() {
+    // read in the inverted index file and start the server
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public List<QueryHit> processQuery(String query) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
   
-  public synchronized Set<Node> computeHITS(String query, int iterations) {
+  private synchronized Set<Node> computeHITS(String query, int iterations) {
     if(query == null) {
       System.err.println("Query must not be null. (computeHITS)");
       return null;
