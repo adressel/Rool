@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package andreasdressel.hits.util;
 
+import andreasdressel.server.util.Node;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,15 +8,17 @@ import java.util.Set;
  *
  * @author Andreas Dressel
  */
-public class Node {
+public class HITSNode extends Node {
   
-  private final Set<Node> outgoingLinks, incomingLinks;
+  private final Set<HITSNode> outgoingLinks, incomingLinks;
   private double hubScore, authScore, hubScoreOld, authScoreOld;
   
   
-  public Node() {
-    this.outgoingLinks = new HashSet<Node>();
-    this.incomingLinks = new HashSet<Node>();
+  public HITSNode(int id) {
+    super(id);
+    
+    this.outgoingLinks = new HashSet<HITSNode>();
+    this.incomingLinks = new HashSet<HITSNode>();
     
     this.hubScore = 1;
     this.authScore = 1;
@@ -30,7 +28,7 @@ public class Node {
   
   public double calculateNewAuthScore() {
     this.authScore = 0;
-    for(Node node : this.incomingLinks) {
+    for(HITSNode node : this.incomingLinks) {
       this.authScore += node.hubScoreOld;
     }
     return this.authScore;
@@ -42,7 +40,7 @@ public class Node {
   
   public double calculateNewHubScore() {
     this.hubScore = 0;
-    for(Node node : this.outgoingLinks) {
+    for(HITSNode node : this.outgoingLinks) {
       this.hubScore += node.authScoreOld;
     }
     return this.hubScore;
@@ -62,11 +60,19 @@ public class Node {
     this.hubScore /= sumOfSquaredHubScores;
   }
   
-  public Set<Node> getOutgoingLinks() {
+  public Set<HITSNode> getOutgoingLinks() {
     return this.outgoingLinks;
   }
   
-  public Set<Node> getIncomingLinks() {
+  public Set<HITSNode> getIncomingLinks() {
     return this.incomingLinks;
+  }
+  
+  public double getHubScore() {
+    return this.hubScore;
+  }
+  
+  public double getAuthScore() {
+    return this.authScore;
   }
 }

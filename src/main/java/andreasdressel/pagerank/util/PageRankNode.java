@@ -1,5 +1,6 @@
 package andreasdressel.pagerank.util;
 
+import andreasdressel.server.util.Node;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,11 +8,11 @@ import java.util.Set;
  *
  * @author Andreas Dressel
  */
-public class Node {
+public class PageRankNode extends Node {
   
   private double rank, weightedRank;
   private long numberOfOutgoingEdges; // a long should be enough, otherwise use BigInteger
-  private final HashSet<Node> incomingEdges;
+  private final HashSet<PageRankNode> incomingEdges;
   
   /**
    * Creates a new Node object. A Node is a part of a graph and can as such be assigned a rank. To 
@@ -28,21 +29,24 @@ public class Node {
    * Source: Sergey Brin and Lawrence Page: "The Anatomy of a Large-Scale Hypertextual 
    * Web Search Engine" (1998)
    * 
+   * @param id This node's ID.
    * @param initialRank The initial PageRank 1/numberOfNodes.
    * @param numberOfOutgoingEdges The number of outgoing edges from this Node.
    */
-  public Node(double initialRank, long numberOfOutgoingEdges) {
+  public PageRankNode(int id, double initialRank, long numberOfOutgoingEdges) {
+    super(id);
+    
     this.rank = initialRank;
     this.weightedRank = 0;
     this.numberOfOutgoingEdges = numberOfOutgoingEdges;
-    this.incomingEdges = new HashSet<Node>();
+    this.incomingEdges = new HashSet<PageRankNode>();
   }
   
-  public void addIncomingEdge(Node node) {
+  public void addIncomingEdge(PageRankNode node) {
     this.incomingEdges.add(node);
   }
   
-  public Set<Node> getIncomingEdges() {
+  public Set<PageRankNode> getIncomingEdges() {
     return this.incomingEdges;
   }
   
