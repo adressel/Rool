@@ -3,7 +3,7 @@ package andreasdressel.pagerank.main;
 import andreasdressel.pagerank.PageRank;
 import andreasdressel.pagerank.io.GraphParser;
 import andreasdressel.pagerank.io.NodeDictionary;
-import andreasdressel.pagerank.util.Node;
+import andreasdressel.pagerank.util.PageRankNode;
 import java.util.List;
 
 /**
@@ -21,7 +21,7 @@ public class Main {
       return;
     }
     
-    List<Node> graph = GraphParser.initializeGraph(args[3]);
+    List<PageRankNode> graph = GraphParser.initializeGraph(args[3]);
     double dValue = Double.parseDouble(args[0]);
     
     if(args[1].equals("-i")) {

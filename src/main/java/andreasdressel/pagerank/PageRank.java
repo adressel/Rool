@@ -1,6 +1,6 @@
 package andreasdressel.pagerank;
 
-import andreasdressel.pagerank.util.Node;
+import andreasdressel.pagerank.util.PageRankNode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class PageRank {
    * @param dValue A damping factor between 0 and 1.
    * @param maxIterations 
    */
-  public static void calculatePageRank(List<Node> graph, double dValue, int maxIterations) {
+  public static void calculatePageRank(List<PageRankNode> graph, double dValue, int maxIterations) {
     if(graph == null || graph.isEmpty()) return;
     if(dValue == 0) return;
     if(dValue < 0 || dValue > 1) {
@@ -37,16 +37,16 @@ public class PageRank {
       return;
     }
     
-    List<Node> noOutgoingEdges = getNodesWithoutOutgoingEdges(graph);
+    List<PageRankNode> noOutgoingEdges = getNodesWithoutOutgoingEdges(graph);
     
     while(maxIterations > 0) {
       calculateWeightedRanks(graph);
       double rankAdjustment = calculateRankAdjustment(noOutgoingEdges);
 
-      for(Node node : graph) {
+      for(PageRankNode node : graph) {
         
         double newPR = rankAdjustment;
-        for(Node incomingEdge : node.getIncomingEdges()) {
+        for(PageRankNode incomingEdge : node.getIncomingEdges()) {
           newPR += incomingEdge.getWeightedRank();
         }
 
@@ -81,7 +81,7 @@ public class PageRank {
    * @param maxChange The maximum deviation in PageRanks from one iteration to the next for every
    * node in the graph.
    */
-  public static void calculatePageRank(List<Node> graph, double dValue, double maxChange) {
+  public static void calculatePageRank(List<PageRankNode> graph, double dValue, double maxChange) {
     if(graph == null || graph.isEmpty()) return;
     if(dValue == 0) return;
     if(dValue < 0 || dValue > 1) {
@@ -89,7 +89,7 @@ public class PageRank {
       return;
     }
     
-    List<Node> noOutgoingEdges = getNodesWithoutOutgoingEdges(graph);
+    List<PageRankNode> noOutgoingEdges = getNodesWithoutOutgoingEdges(graph);
     
     boolean ranksChangedSignificantly;
     do {      
@@ -98,10 +98,10 @@ public class PageRank {
       calculateWeightedRanks(graph);
       double rankAdjustment = calculateRankAdjustment(noOutgoingEdges);
     
-      for(Node node : graph) {
+      for(PageRankNode node : graph) {
       
         double newPR = rankAdjustment;
-        for(Node incomingEdge : node.getIncomingEdges()) {
+        for(PageRankNode incomingEdge : node.getIncomingEdges()) {
           newPR += incomingEdge.getWeightedRank();
         }
       
@@ -117,15 +117,15 @@ public class PageRank {
   }
   
   
-  private static void calculateWeightedRanks(List<Node> graph) {
-    for(Node node : graph) {
+  private static void calculateWeightedRanks(List<PageRankNode> graph) {
+    for(PageRankNode node : graph) {
       node.updateWeightedRank(graph.size());
     }
   }
   
-  private static List<Node> getNodesWithoutOutgoingEdges(List<Node> graph) {
-    List<Node> result = new ArrayList<Node>();
-    for(Node node : graph) {
+  private static List<PageRankNode> getNodesWithoutOutgoingEdges(List<PageRankNode> graph) {
+    List<PageRankNode> result = new ArrayList<PageRankNode>();
+    for(PageRankNode node : graph) {
       if(!node.hasOutgoingEdges()) {
         result.add(node);
       }
@@ -133,9 +133,9 @@ public class PageRank {
     return result;
   }
   
-  private static double calculateRankAdjustment(List<Node> noOutgoingEdges) {
+  private static double calculateRankAdjustment(List<PageRankNode> noOutgoingEdges) {
     double result = 0.0;
-    for(Node node : noOutgoingEdges) {
+    for(PageRankNode node : noOutgoingEdges) {
       result += node.getWeightedRank();
     }
     return result;

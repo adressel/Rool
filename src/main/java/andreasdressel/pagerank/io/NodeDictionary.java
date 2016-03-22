@@ -1,6 +1,6 @@
 package andreasdressel.pagerank.io;
 
-import andreasdressel.pagerank.util.Node;
+import andreasdressel.pagerank.util.PageRankNode;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,10 +16,10 @@ import java.util.Map;
 public class NodeDictionary {
   
   private static NodeDictionary _instance = null;
-  private final HashMap<Long, Node> map;
+  private final HashMap<Long, PageRankNode> map;
   
   private NodeDictionary() {
-    this.map = new HashMap<Long, Node>();
+    this.map = new HashMap<Long, PageRankNode>();
   }
   
   public static synchronized NodeDictionary getInstance() {
@@ -29,11 +29,11 @@ public class NodeDictionary {
     return _instance;
   }
   
-  public void addNode(long id, Node node) {
+  public void addNode(long id, PageRankNode node) {
     this.map.put(id, node);
   }
   
-  public Node getNode(long id) {
+  public PageRankNode getNode(long id) {
     return this.map.get(id);
   }
   
@@ -44,7 +44,7 @@ public class NodeDictionary {
     try {
       writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filename))));
       
-      for (Map.Entry<Long, Node> entry : this.map.entrySet()) {
+      for (Map.Entry<Long, PageRankNode> entry : this.map.entrySet()) {
         StringBuilder builder = new StringBuilder();
         builder.append(entry.getKey());
         builder.append(" ");
