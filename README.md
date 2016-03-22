@@ -9,9 +9,9 @@ Rool is an ongoing project the goal for which is to build an integrated system o
 The ranking and scoring algorithms at the base of Rool are:
 
 - [x] PageRank [1]
-- [] Hubs and Authorities [2]
-- [] TF-IDF Indexing
-- [] ...
+- [ ] Hubs and Authorities [2]
+- [ ] TF-IDF Indexing
+- [ ] ...
 
 
 ## Next Steps
