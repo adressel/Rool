@@ -9,10 +9,9 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-
+import org.apache.mahout.classifier.bayes.XmlInputFormat;
 
 /**
  *
@@ -23,6 +22,30 @@ public class HITSIndexer {
   public static void main(String[] args) {
     
     Configuration conf = new Configuration();
+    conf.set("xmlinput.start", "<user>");
+    conf.set("xmlinput.end", "</user>");
+    
+    /*
+    The XML file will have the following format:
+    
+    ...
+    <users>
+     <user>
+      <user_id> 1 </user_id>
+      <posts>
+       <post> abcde </post>
+       <post> fghij </post>
+       ...
+      </posts>
+     <user>
+     <user_id> 2 </user_id>
+     ...
+     </user
+    ...
+    </users>
+    ...
+    
+    */
     
     try {
       
@@ -34,7 +57,7 @@ public class HITSIndexer {
       job.setMapperClass(WordDocIDMapper.class);
       job.setReducerClass(WordDocIDReducer.class);
 
-      job.setInputFormatClass(TextInputFormat.class);
+      job.setInputFormatClass(XmlInputFormat.class);
       job.setOutputFormatClass(TextOutputFormat.class);
 
       FileInputFormat.addInputPath(job, new Path("inputfile"));
