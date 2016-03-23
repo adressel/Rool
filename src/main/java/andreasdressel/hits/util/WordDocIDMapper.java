@@ -25,13 +25,14 @@ public class WordDocIDMapper extends Mapper<LongWritable, Text, Text, Text> {
     Builder builder = new Builder();
 
     try {
-      Document doc = builder.build(value.toString());
+      Document doc = builder.build(value.toString(), null);
       String id  = doc.query("//user_id").get(0).getChild(0).getValue();
 
       Nodes posts = doc.query("//posts");
-      for (int i = 0; i < posts.size(); i++) {
+      for (int i = 0; i < posts.get(0).getChildCount(); i++) {
         
-        String post = posts.get(i).getChild(0).getValue();
+        String post = posts.get(0).getChild(i).getValue();
+        
         post = post.replaceAll("[^a-zA-Z0-9]", " ");
         String[] words = post.split(" ");
 

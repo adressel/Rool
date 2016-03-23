@@ -1,7 +1,6 @@
 package andreasdressel.hits.util;
 
 import java.io.IOException;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -9,7 +8,7 @@ import org.apache.hadoop.mapreduce.Reducer;
  *
  * @author Andreas Dressel
  */
-public class WordDocIDReducer extends Reducer<Text, LongWritable, Text, Text> {
+public class WordDocIDReducer extends Reducer<Text, Text, Text, Text> {
   
   public void reduce(Text key, Iterable<Text> values, Context context) 
           throws IOException, InterruptedException {
