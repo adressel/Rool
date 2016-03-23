@@ -11,12 +11,12 @@ import org.apache.hadoop.mapreduce.Reducer;
  */
 public class WordDocIDReducer extends Reducer<Text, LongWritable, Text, Text> {
   
-  public void reduce(Text key, Iterable<LongWritable> values, Context context) 
+  public void reduce(Text key, Iterable<Text> values, Context context) 
           throws IOException, InterruptedException {
     
     StringBuilder builder = new StringBuilder();
-    for(LongWritable lw : values) {
-      builder.append(lw.toString());
+    for(Text t : values) {
+      builder.append(t.toString());
       builder.append(" ");
     }
     context.write(key, new Text(builder.toString()));
