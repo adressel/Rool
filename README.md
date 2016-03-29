@@ -82,6 +82,8 @@ This is an example of an output file (the result of running the above input file
 
 
 
+Sources:
 [1] Sergey Brin and Lawrence Page: "The Anatomy of a Large-Scale Hypertextual Web Search Engine" (1998)
+
 [2] Jon M. Kleinberg: "Authoritative Sources in a Hyperlinked Environment" (1999)
 
