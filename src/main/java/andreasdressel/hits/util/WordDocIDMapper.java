@@ -9,6 +9,7 @@ import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Nodes;
 import nu.xom.ParsingException;
+import andreasdressel.util.Stopwords;
 
 /**
  *
@@ -16,8 +17,7 @@ import nu.xom.ParsingException;
  */
 public class WordDocIDMapper extends Mapper<LongWritable, Text, Text, Text> {
 
-  //@todo: populate stopwords
-  private static final HashSet<String> stopwords = new HashSet<String>();
+  private static final HashSet<String> stopwords = Stopwords.getInstance().getStopwords();
   
   public void map(LongWritable key, Text value, Context context)
           throws IOException, InterruptedException {

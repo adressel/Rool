@@ -1,12 +1,20 @@
 package andreasdressel.hits;
 
+import andreasdressel.hits.util.HITSGraphParser;
 import andreasdressel.hits.util.HITSNode;
 import andreasdressel.hits.util.HITSQueryHandler;
 import andreasdressel.server.Server;
-import andreasdressel.server.util.Node;
+import andreasdressel.util.Node;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import andreasdressel.util.Stopwords;
 
 /**
  *
@@ -14,16 +22,19 @@ import java.util.Set;
  */
 public final class HITSQueryServer extends Server {
   
+  private static int NUMBER_OF_ITERATIONS = 0;
+  
+  private final HashMap<Integer, HITSNode> nodes;
   private final HashMap<String, HashSet<HITSNode>> invertedIndex;
   private final HashSet<String> stopWords;
-  private static final int NUMBER_OF_ITERATIONS = 10;
   
   
-  private HITSQueryServer(int port, String filename) {
-    super(port, filename);
+  private HITSQueryServer(int port, String configFileName) {
+    super(port, configFileName);
     
+    this.nodes = new HashMap<Integer, HITSNode>();
     this.invertedIndex = new HashMap<String, HashSet<HITSNode>>();
-    this.stopWords = new HashSet<String>();
+    this.stopWords = Stopwords.getInstance().getStopwords();
     initServer();
     start(new HITSQueryHandler(this));
     
@@ -31,8 +42,52 @@ public final class HITSQueryServer extends Server {
   
   @Override
   public void initServer() {
-    // read in the inverted index file, stopwords file and start the server
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /* 
+    Configuration file format:
+    
+    -s <stopwordsfile>   // this should be done in the main config file
+    -g <graphfile>
+    -i <invertedindexfile>
+    -p <precision>
+    */
+    
+    BufferedReader reader = null;
+    
+    try {
+      reader = new BufferedReader(new InputStreamReader(
+              new FileInputStream(new File(this.configFileName))));
+      
+      String line = null;
+      while((line = reader.readLine()) != null) {
+        String filename = line.substring(line.indexOf(" ") + 1);
+        if(line.startsWith("-s")) {
+          Stopwords.init(filename);
+        } else if(line.startsWith("-g")) {
+          HITSGraphParser.parseGraph(filename, this.nodes);
+        } else if(line.startsWith("-i")) {
+          parseInvertedIndexFile(filename);
+        } else if(line.startsWith("-p")) {
+          NUMBER_OF_ITERATIONS = Integer.parseInt(filename);
+        } else {
+          System.err.println("Malformed configuration file (HITSQueryServer).");
+        }
+      }
+      
+    } catch(FileNotFoundException ex) {
+      System.err.println("HITS inverted index file not found.");
+      ex.printStackTrace();
+    } catch(IOException ex) {
+      ex.printStackTrace();
+    } finally {
+      if(reader != null) {
+        try {
+          reader.close();
+        } catch(IOException ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+    
   }
 
   @Override
@@ -49,6 +104,8 @@ public final class HITSQueryServer extends Server {
     Node[] result = hits.toArray(new Node[0]);
     
     //@todo: does sorting make any sense here? if yes, how? (two scores)
+    // one option would be to return two lists with the sorted hubs scores, 
+    // and the sorted auth scores respectively
     
     return result;
   }
@@ -61,6 +118,8 @@ public final class HITSQueryServer extends Server {
     
     // 2. extend base set to seed set
     extendToSeedSet(seedSet);
+    
+    //@todo: reset all nodes into their original state! (all scores to 1)
     
     // 3. iteratively calculate hits values, and normalize after each step
     double sumOfSquaredAuthScores = 0, sumOfSquaredHubScores = 0;
@@ -130,5 +189,48 @@ public final class HITSQueryServer extends Server {
       node.updateOldAuthScore();
       node.updateOldHubScore();
     }
+  }
+  
+  private void parseInvertedIndexFile(String filename) {
+    BufferedReader reader = null;
+    
+    try {
+      reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
+      
+      String line = null;
+      while((line = reader.readLine()) != null) {
+        int index = line.indexOf("\t");
+        String word = line.substring(0, index);
+        String[] ids = line.substring(index + 1).split(" ");
+
+        HashSet<HITSNode> elements = this.invertedIndex.containsKey(word) ?
+                this.invertedIndex.get(word) : new HashSet<HITSNode>();
+
+        for(String s : ids) {
+          int id = Integer.parseInt(s);
+          HITSNode node = this.nodes.get(id);
+          if(node == null) {
+            System.err.println("Warning: Node with id <" + id + "> is not in the graph file "
+                    + "but referred to in the inverted index file.");
+          } else {
+            elements.add(node);
+          }
+        }
+        this.invertedIndex.put(word, elements);
+      }
+    } catch(FileNotFoundException ex) {
+      ex.printStackTrace();
+    } catch(IOException ex) {
+      ex.printStackTrace();
+    } finally {
+      if(reader != null) {
+        try {
+          reader.close();
+        } catch(IOException ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+    
   }
 }
