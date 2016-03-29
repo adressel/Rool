@@ -1,6 +1,6 @@
 package andreasdressel.server;
 
-import andreasdressel.server.util.Node;
+import andreasdressel.util.Node;
 import andreasdressel.server.util.QueryHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -15,17 +15,17 @@ import com.sun.net.httpserver.HttpServer;
 
 public abstract class Server {
   protected final int port;
-  protected final String filename;
+  protected final String configFileName;
   
   /**
    * 
    * 
    * @param port
-   * @param filename
+   * @param configFileName
    */
-  protected Server(int port, String filename) {
+  protected Server(int port, String configFileName) {
     this.port = port;
-    this.filename = filename;
+    this.configFileName = configFileName;
     
     //initServer(filename);
   }

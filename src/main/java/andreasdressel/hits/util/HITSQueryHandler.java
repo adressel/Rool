@@ -1,7 +1,7 @@
 package andreasdressel.hits.util;
 
 import andreasdressel.server.Server;
-import andreasdressel.server.util.Node;
+import andreasdressel.util.Node;
 import andreasdressel.server.util.QueryHandler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
