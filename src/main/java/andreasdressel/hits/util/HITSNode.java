@@ -1,6 +1,6 @@
 package andreasdressel.hits.util;
 
-import andreasdressel.server.util.Node;
+import andreasdressel.util.Node;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -62,6 +62,14 @@ public class HITSNode extends Node {
   
   public Set<HITSNode> getOutgoingLinks() {
     return this.outgoingLinks;
+  }
+  
+  public void addOutgoingLink(HITSNode node) {
+    this.outgoingLinks.add(node);
+  }
+  
+  public void addIncomingLink(HITSNode node) {
+    this.incomingLinks.add(node);
   }
   
   public Set<HITSNode> getIncomingLinks() {

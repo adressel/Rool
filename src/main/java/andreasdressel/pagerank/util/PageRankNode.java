@@ -1,6 +1,6 @@
 package andreasdressel.pagerank.util;
 
-import andreasdressel.server.util.Node;
+import andreasdressel.util.Node;
 import java.util.HashSet;
 import java.util.Set;
 

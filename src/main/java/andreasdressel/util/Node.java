@@ -1,4 +1,4 @@
-package andreasdressel.server.util;
+package andreasdressel.util;
 
 /**
  *
