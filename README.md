@@ -4,6 +4,7 @@ Rool is an ongoing project the goal for which is to build an integrated system o
 
 * Any task which can be performed by common search engines (user search, etc.)
 * Find the most relevant user accounts and/or posts for a given topic.
+* Filter a user's new feed according to her interests, showing her the most relevant posts only.
 * ...
 
 The ranking and scoring algorithms at the base of Rool are:
