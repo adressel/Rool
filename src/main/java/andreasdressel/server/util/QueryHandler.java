@@ -1,5 +1,6 @@
 package andreasdressel.server.util;
 
+import andreasdressel.util.Node;
 import andreasdressel.server.Server;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
