@@ -17,18 +17,28 @@ public class HITSQueryHandler extends QueryHandler {
   }
   
   @Override
-  protected JSONArray toJSONArray(Node[] hits) {
-    JSONArray result = new JSONArray();
-      for(Node node : hits) {
+  protected JSONObject toJSONObject(Node[] hits) {
+    JSONObject object = new JSONObject();
+    
+    JSONArray hubScores = new JSONArray(), authScores = new JSONArray();
+    for(Node node : hits) {
         
-        if(node instanceof HITSNode) {
-          JSONObject obj = new JSONObject();
-          obj.put("id", node.getID());
-          obj.put("hub_score", ((HITSNode)node).getHubScore());
-          obj.put("auth_score", ((HITSNode)node).getAuthScore());
-          result.add(obj);
-        }
+      if(node instanceof HITSNode) {
+        JSONObject h = new JSONObject();
+        h.put("id", node.getID());
+        h.put("hub_score", ((HITSNode)node).getHubScore());
+        
+        JSONObject a = new JSONObject();
+        a.put("id", node.getID());
+        a.put("auth_score", ((HITSNode)node).getAuthScore());
+          
+        hubScores.add(h);
+        authScores.add(a);
       }
-    return result;
-  }
+    }
+    object.put("hub_scores", hubScores);
+    object.put("auth_scores", authScores);
+    
+    return object;
+  } 
 }

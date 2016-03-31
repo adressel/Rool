@@ -39,7 +39,7 @@ public abstract class QueryHandler implements HttpHandler {
       if ("/search".equals(path)) {
         String query = null;
         String elements[] = exchange.getRequestURI().getQuery().split("&");
-
+        
         for (String element : elements) {
           String name = element.split("=")[0];
           String val = URLDecoder.decode(element.split("=")[1], "UTF-8");
@@ -49,12 +49,7 @@ public abstract class QueryHandler implements HttpHandler {
         }
 
         Node[] hits = this.server.processQuery(query);
-
-        // encode the Nodes in a JSON array
-        JSONArray hitarray = toJSONArray(hits);
-
-        JSONObject resultObj = new JSONObject();
-        resultObj.put("hits", hitarray);
+        JSONObject resultObj = toJSONObject(hits);
 
         // Emit the text
         StringWriter out = new StringWriter();
@@ -67,5 +62,5 @@ public abstract class QueryHandler implements HttpHandler {
     }
   }
   
-  protected abstract JSONArray toJSONArray(Node[] hits);
+  protected abstract JSONObject toJSONObject(Node[] hits);
 }
