@@ -9,15 +9,14 @@ Rool is an ongoing project the goal for which is to build an integrated system o
 
 The ranking and scoring algorithms at the base of Rool are:
 
-- [x] PageRank [1]
-- [ ] Hubs and Authorities [2]
+- [x] PageRank  [1]
+- [x] Hubs and Authorities  [2]
 - [ ] TF-IDF Indexing
 - [ ] ...
 
 
 ## Next Steps
 
-* Tests for Hubs and Authorities
 * Implement TF-IDF Indexing, Tests
 * Research machine learning algorithms to determine the influence factors for each ranking/scoring algorithm (regression analysis would be a simple option)
 
@@ -76,6 +75,73 @@ This is an example of an output file (the result of running the above input file
 
 ## Hubs and Authorities (HITS)
 
+HITS is a query-dependent scoring algorithm described in [2]. My implementation consists of two major steps:
+
+1. An inverted indexer which takes in an XML file with user data and produces a file containing an index of <word> -> <list of docs>.
+2. A query server which calculates HITS scores for incoming queries.
+
+### Inverted Indexer
+
+The inverted indexer requires an XML file with user and post data in the following format:
+
+    ...
+    <users>
+      <user>
+        <user_id>I1</user_id>
+        <posts>
+          <post>S1</post>
+          <post>S2</post>
+          ...
+        </posts>
+        ...
+      </user>
+      <user>
+        <user_id>I2</user_id>
+        <posts>
+          <post>S3</post>
+          ...
+        </posts>
+        ...
+      </user>
+    ...
+    </users>
+    ...
+
+A user has a unique ID (I1, I2, ... have to be integers), zero or more posts (S1, S2, S3, ... have to be strings), and can have additional attributes (which are not considered when creating the inverted index).
+
+To start the inverted indexer, run (binary files to be created):
+
+    ./HITSIndexer <inputFileName> <outputFileName>
+
+This will create a Hadoop MapReduce Job, the result of which is then saved in <outputFileName>, using the following format:
+
+    <word1>	<user_id_1> <user_id_2> ...
+    <word2>	<user_id_3> ...
+    ...
+
+Note that each word and the corresponding list of users is separated by a tab ("\t" in Java).
+
+
+### Query Server
+
+The HITS query server answers incoming queries by calculating HITS scores. In order to start, it requires a port to run on and a properly formatted configuration file.
+
+    ./HITSQueryServer <port> <configFile>
+
+This is an example for the configuration file's format:
+
+    -s <stopwordsfile>
+    -g <graphfile>
+    -i <invertedindexfile>
+    -p <precision>
+
+The stopwords file contains a collection of words, that will not be considered when answering a query (like "", "a", "in", ...). The graph file has the same format as described under PageRank -> Input File Format. The inverted index file is the output obtained from running the inverted indexer. The precision allows the user to influence the number of iterations of the HITS algorithm (low integers produce less precise results, but faster, and vice versa).
+
+The HITS query server will answer HTTP GET requests, which are formatted in the following way:
+
+    host:port/search?q=query
+
+The response will be a JSONObject containing two JSONArrays with the identifiers "hub_scores" and "auth_scores", containing the hub and authority scores for all nodes relevant to the query.
 
 
 ## Inverted document frequencies (TF-IDF)
@@ -84,6 +150,7 @@ This is an example of an output file (the result of running the above input file
 
 
 Sources:
+
 [1] Sergey Brin and Lawrence Page: "The Anatomy of a Large-Scale Hypertextual Web Search Engine" (1998)
 
 [2] Jon M. Kleinberg: "Authoritative Sources in a Hyperlinked Environment" (1999)
