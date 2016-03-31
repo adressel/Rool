@@ -26,9 +26,11 @@ public class HITSNode extends Node {
     this.authScoreOld = 1;
   }
   
-  public double calculateNewAuthScore() {
+  public double calculateNewAuthScore(HashSet<HITSNode> seedSet) {
     this.authScore = 0;
     for(HITSNode node : this.incomingLinks) {
+      if(!seedSet.contains(node) || node.id == this.id) continue;
+      
       this.authScore += node.hubScoreOld;
     }
     return this.authScore;
@@ -38,9 +40,11 @@ public class HITSNode extends Node {
     this.authScoreOld = this.authScore;
   }
   
-  public double calculateNewHubScore() {
+  public double calculateNewHubScore(HashSet<HITSNode> seedSet) {
     this.hubScore = 0;
     for(HITSNode node : this.outgoingLinks) {
+      if(!seedSet.contains(node) || node.id == this.id) continue;
+      
       this.hubScore += node.authScoreOld;
     }
     return this.hubScore;
@@ -82,5 +86,12 @@ public class HITSNode extends Node {
   
   public double getAuthScore() {
     return this.authScore;
+  }
+  
+  public void setScoresToInitialState() {
+    this.hubScore = 1.0;
+    this.authScore = 1.0;
+    this.hubScoreOld = 1.0;
+    this.authScoreOld = 1.0;
   }
 }

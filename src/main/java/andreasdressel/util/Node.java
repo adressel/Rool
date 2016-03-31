@@ -6,7 +6,7 @@ package andreasdressel.util;
  */
 public abstract class Node {
   
-  private final int id;
+  protected final int id;
   
   public Node(int id) {
     this.id = id;

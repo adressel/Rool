@@ -34,7 +34,8 @@ public class HITSGraphParser {
       
       int numberOfNodes = Integer.parseInt(line.substring(line.indexOf(" ") + 1));
       while(numberOfNodes > 0) {
-        int id = Integer.parseInt(reader.readLine());
+        line = reader.readLine();
+        int id = Integer.parseInt(line.substring(0, line.indexOf(" ")));
         
         graph.put(id, new HITSNode(id));
         numberOfNodes--;

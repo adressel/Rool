@@ -22,7 +22,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>andreasdressel.hits.HITSIndexer</mainClass>
+              <mainClass>andreasdressel.hits.HITSQueryServer</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

@@ -53,7 +53,7 @@ public abstract class Server {
   /**
    * 
    */
-  public abstract void initServer();
+  protected abstract void initServer();
   
   /**
    * 

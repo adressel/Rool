@@ -34,14 +34,14 @@ public final class HITSQueryServer extends Server {
     
     this.nodes = new HashMap<Integer, HITSNode>();
     this.invertedIndex = new HashMap<String, HashSet<HITSNode>>();
-    this.stopWords = Stopwords.getInstance().getStopwords();
     initServer();
+    this.stopWords = Stopwords.getInstance().getStopwords();
     start(new HITSQueryHandler(this));
     
   }
   
   @Override
-  public void initServer() {
+  protected void initServer() {
     /* 
     Configuration file format:
     
@@ -119,15 +119,16 @@ public final class HITSQueryServer extends Server {
     // 2. extend base set to seed set
     extendToSeedSet(seedSet);
     
-    //@todo: reset all nodes into their original state! (all scores to 1)
+    //reset all nodes into their initial state! (all scores to 1)
+    setToInitialState(seedSet);
     
     // 3. iteratively calculate hits values, and normalize after each step
-    double sumOfSquaredAuthScores = 0, sumOfSquaredHubScores = 0;
     while(iterations > 0) {
+      double sumOfSquaredAuthScores = 0, sumOfSquaredHubScores = 0;
       
       for(HITSNode node : seedSet) {
-        sumOfSquaredAuthScores += Math.pow(node.calculateNewAuthScore(), 2);
-        sumOfSquaredHubScores += Math.pow(node.calculateNewHubScore(), 2);
+        sumOfSquaredAuthScores += Math.pow(node.calculateNewAuthScore(seedSet), 2);
+        sumOfSquaredHubScores += Math.pow(node.calculateNewHubScore(seedSet), 2);
       }
       
       sumOfSquaredAuthScores = Math.sqrt(sumOfSquaredAuthScores);
@@ -231,6 +232,23 @@ public final class HITSQueryServer extends Server {
         }
       }
     }
+  }
+  
+  private void setToInitialState(HashSet<HITSNode> nodes) {
+    for(HITSNode node : nodes) {
+      node.setScoresToInitialState();
+    }
+  }
+  
+  public static void main(String[] args) {
+    if(args.length != 2) {
+      System.err.println("Malformed input. Usage:\n HITSQueryServer <port> <configurationFileName>");
+      return;
+    }
     
+    int port = Integer.parseInt(args[0]);
+    String configFile = args[1];
+    
+    new HITSQueryServer(port, configFile);
   }
 }
