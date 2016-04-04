@@ -1,9 +1,9 @@
 package andreasdressel.hits;
 
-import andreasdressel.hits.util.HITSGraphParser;
 import andreasdressel.hits.util.HITSNode;
 import andreasdressel.hits.util.HITSQueryHandler;
 import andreasdressel.server.Server;
+import andreasdressel.util.GraphParser;
 import andreasdressel.util.Node;
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +24,7 @@ public final class HITSQueryServer extends Server {
   
   private static int NUMBER_OF_ITERATIONS = 0;
   
-  private final HashMap<Integer, HITSNode> nodes;
+  private HashMap<Integer, HITSNode> nodes;
   private final HashMap<String, HashSet<HITSNode>> invertedIndex;
   private final HashSet<String> stopWords;
   
@@ -63,7 +63,7 @@ public final class HITSQueryServer extends Server {
         if(line.startsWith("-s")) {
           Stopwords.init(filename);
         } else if(line.startsWith("-g")) {
-          HITSGraphParser.parseGraph(filename, this.nodes);
+          this.nodes = GraphParser.initializeHITSGraph(filename);
         } else if(line.startsWith("-i")) {
           parseInvertedIndexFile(filename);
         } else if(line.startsWith("-p")) {

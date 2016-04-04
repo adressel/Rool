@@ -11,7 +11,7 @@ import java.util.Set;
 public class PageRankNode extends Node {
   
   private double rank, weightedRank;
-  private long numberOfOutgoingEdges; // a long should be enough, otherwise use BigInteger
+  private int numberOfOutgoingEdges; 
   private final HashSet<PageRankNode> incomingEdges;
   
   /**
@@ -31,14 +31,13 @@ public class PageRankNode extends Node {
    * 
    * @param id This node's ID.
    * @param initialRank The initial PageRank 1/numberOfNodes.
-   * @param numberOfOutgoingEdges The number of outgoing edges from this Node.
    */
-  public PageRankNode(int id, double initialRank, long numberOfOutgoingEdges) {
+  public PageRankNode(int id, double initialRank) {
     super(id);
     
     this.rank = initialRank;
     this.weightedRank = 0;
-    this.numberOfOutgoingEdges = numberOfOutgoingEdges;
+    this.numberOfOutgoingEdges = 0;
     this.incomingEdges = new HashSet<PageRankNode>();
   }
   

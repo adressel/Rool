@@ -1,8 +1,16 @@
 package andreasdressel.pagerank;
 
+import andreasdressel.util.GraphParser;
 import andreasdressel.pagerank.util.PageRankNode;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -139,5 +147,54 @@ public class PageRank {
       result += node.getWeightedRank();
     }
     return result;
+  }
+  
+  private static void writeScoresToFile(HashMap<Integer, PageRankNode> graph, String filename) {
+    BufferedWriter writer = null;
+    
+    try {
+      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filename))));
+      
+      for(Map.Entry<Integer, PageRankNode> entry : graph.entrySet()) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(entry.getKey());
+        builder.append(" ");
+        builder.append(entry.getValue().getRank());
+        writer.write(builder.toString());
+        writer.newLine();
+      }
+      
+    } catch(IOException ex) {
+      ex.printStackTrace();
+    } finally {
+      if(writer != null) {
+        try {
+          writer.close();
+        } catch(IOException ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+  }
+  
+  public static void main(String[] args) {
+    if(args.length != 5) {
+      System.err.println("Malformed input. Usage:\n Test <dValue> (-i <numberOfIterations> | "
+          + "-converge <maxChange>) <inputFileName> <outputFileName>");
+      return;
+    }
+    
+    HashMap<Integer, PageRankNode> nodes = GraphParser.initializePRGraph(args[3]);
+    List<PageRankNode> graph = new ArrayList<PageRankNode>(nodes.values());
+    
+    double dValue = Double.parseDouble(args[0]);
+    
+    if(args[1].equals("-i")) {
+      PageRank.calculatePageRank(graph, dValue, Integer.parseInt(args[2]));
+    } else {
+      PageRank.calculatePageRank(graph, dValue, Double.parseDouble(args[2]));
+    }
+    
+    writeScoresToFile(nodes, args[4]);
   }
 }
